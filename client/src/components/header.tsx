@@ -1,12 +1,19 @@
 'use client';
 import React, {useEffect} from 'react';
-import {initFlowbite} from "flowbite";
+// import {initFlowbite} from "flowbite";
 
 
 function Header() {
     useEffect(() => {
-        initFlowbite();
+        if (typeof window !== 'undefined') {
+            const initFlowbite = async () => {
+                const { initFlowbite } = await import('flowbite');
+                initFlowbite();
+            };
+            initFlowbite();
+        }
     }, []);
+
     return (
         <header className='sticky top-0'>
             <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
