@@ -25,8 +25,9 @@ jobs:
         run: appwrite client \
               --endpoint ${{ secrets.APPWRITE_ENDPOINT }} \
               --project-id ${{ secrets.APPWRITE_PROJECT_ID }} \
-              --key ${{ secrets.APPWRITE_API_KEY }}
+              --key ${{ secrets.APPWRITE_API_KEY }} \
+              && appwrite push all --all --force
 
-      # Push changes to Appwrite Cloud
-      - name: Push changes to Appwrite Cloud
-        run: appwrite push all --all --force
+#      # Push changes to Appwrite Cloud
+#      - name: Push changes to Appwrite Cloud
+#        run: appwrite push all --all --force
