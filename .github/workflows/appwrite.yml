@@ -27,8 +27,8 @@ jobs:
       # Appwrite login
       # Use appwrite login since client api key does not set session required for push
       - name: Login to Appwrite
-        run: appwrite login --endpoint ${{ secrets.APPWRITE_ENDPOINT }} --email ${{ secrets.APPWRITE_EMAIL }} --password ${{ secrets.APPWRITE_PASSWORD }}
+        run: appwrite login --endpoint ${{ secrets.APPWRITE_ENDPOINT }} --email ${{ secrets.APPWRITE_EMAIL }} --password '${{ secrets.APPWRITE_PASSWORD }}'
 
       # Push changes to Appwrite Cloud
       - name: Push changes to Appwrite Cloud
-        run: appwrite push all --all --force --verbose
+        run: appwrite push all --all --force
