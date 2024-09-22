@@ -1,23 +1,22 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react"
+import {Inter} from "next/font/google";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+const inter = Inter({
+  subsets: ['latin'],
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+
+const BASEURL = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_BRANCH_URL ?? process.env.VERCEL_URL ??
+    process.env.METADATA_BASE ?? `http://localhost:${process.env.PORT || 3000}`
 
 export const metadata: Metadata = {
-  title: "gitConnect",
+  title: {default: "gitConnect", template: "%s  | gitConnect"},
   description: "gitConnect allows developers to  create a developer profile/portfolio, share posts and get help from others developers.",
+  metadataBase: new URL(BASEURL.startsWith('http') ? BASEURL : `https://${BASEURL}`),
 };
 
 export default function RootLayout({
@@ -28,9 +27,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.className} bg-white dark:bg-gray-800 antialiased flex flex-col min-h-screen`} suppressHydrationWarning={true}
       >
-        {children}
+      <Header/>
+      <main className='flex-1'>{children}</main>
+      <Footer/>
       </body>
       {process.env.ENABLE_VERCEL_ANALYTICS == 'true' && <Analytics/>}
     </html>
