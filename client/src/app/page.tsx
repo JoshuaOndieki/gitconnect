@@ -14,10 +14,10 @@ export default function Home() {
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4 mt-8">
-              <img className="w-full rounded-lg"
+              <img className="w-full rounded"
                    src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-2.png"
                    alt="office content 1"/>
-              <img className="mt-4 w-full lg:mt-10 rounded-lg"
+              <img className="mt-4 w-full lg:mt-10 rounded"
                    src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-1.png"
                    alt="office content 2"/>
             </div>
@@ -190,7 +190,7 @@ export default function Home() {
             <div
                 className="flex flex-col mb-8 lg:mb-16 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
               <a href="#"
-                 className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
+                 className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
                 Join the Developer Community Today
                 <svg className="ml-2 -mr-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
                      xmlns="http://www.w3.org/2000/svg">
@@ -224,12 +224,12 @@ export default function Home() {
                       </svg>
                     </div>
                     <input
-                        className="block p-3 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:rounded-none sm:rounded-l-lg focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        className="block p-3 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded border border-gray-300 sm:rounded-none sm:rounded-l-lg focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                         placeholder="Enter your email" type="email" id="email" required/>
                   </div>
                   <div>
                     <button type="submit"
-                            className="py-3 px-5 w-full text-sm font-medium text-center text-white rounded-lg border cursor-pointer bg-primary-700 border-primary-600 sm:rounded-none sm:rounded-r-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Subscribe
+                            className="py-3 px-5 w-full text-sm font-medium text-center text-white rounded border cursor-pointer bg-primary-700 border-primary-600 sm:rounded-none sm:rounded-r-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Subscribe
                     </button>
                   </div>
                 </div>

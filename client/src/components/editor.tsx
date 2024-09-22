@@ -1,0 +1,63 @@
+'use client';
+import React, {useRef} from 'react';
+import dynamic from "next/dynamic";
+import 'react-quill/dist/quill.snow.css';
+
+
+const ReactQuill = dynamic(async ()=> {
+    const {default: ReactQuill1} = await import("react-quill");
+    return ({forwardedRef, ...props}: any) => (
+        <ReactQuill1 ref={forwardedRef} {...props} />
+    );
+}, {
+    ssr: false,
+});
+
+function Editor(props:any) {
+    const [content, setContent] = React.useState('');
+
+    const changeContent = (event: any) => {
+        console.log(event);
+    }
+
+    const quillRef = useRef<any>(null);
+
+    // Custom image handler for ReactQuill
+    const imageHandler = () => {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = async () => {
+            const file = input.files ? input.files[0] : null;
+            if (file) {
+                const fileName = `${Date.now()}_${file.name}`;
+                try {
+                    // TODO: upload image to Appwrite storage
+                    const quill = quillRef?.current?.getEditor();
+                    console.log('quill', quill)
+                    const range = quill.getSelection();
+                    quill.insertEmbed(range.index, 'image', '/images/gitconnect-logo-with-brandname.png');
+                } catch (error) {
+                    console.error('Error uploading image:', error);
+                }
+            }
+        };
+    };
+
+    return (
+        <ReactQuill forwardedRef={quillRef} value={content} onChange={changeContent} theme='snow'
+                    modules={{toolbar: {
+                            container: [
+                                [{ 'header': [1, 2, false] }],
+                                ['bold', 'italic', 'underline', 'strike'],
+                                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                ['link', 'image'],
+                                ['code-block']
+                            ], handlers: {image: imageHandler}}}}
+                    placeholder='write your post here..'/>
+    );
+}
+
+export default Editor;

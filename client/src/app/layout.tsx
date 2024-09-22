@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} bg-white dark:bg-gray-800 antialiased flex flex-col min-h-screen`} suppressHydrationWarning={true}
+        className={`${inter.className} bg-white dark:bg-gray-800 antialiased flex flex-col min-h-screen max-w-screen-2xl`} suppressHydrationWarning={true}
       >
       <Header/>
       <main className='flex-1'>{children}</main>
