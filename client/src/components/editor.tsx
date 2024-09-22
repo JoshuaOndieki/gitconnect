@@ -13,12 +13,13 @@ const ReactQuill = dynamic(async ()=> {
     ssr: false,
 });
 
-function Editor(props:any) {
-    const [content, setContent] = React.useState('');
-
-    const changeContent = (event: any) => {
-        console.log(event);
-    }
+function Editor() {
+    // const [content, setContent] = React.useState('');
+    //
+    // const changeContent = (newContent: string) => {
+    //     console.log(newContent)
+    //     setContent(newContent);
+    // }
 
     const quillRef = useRef<any>(null);
 
@@ -32,7 +33,7 @@ function Editor(props:any) {
         input.onchange = async () => {
             const file = input.files ? input.files[0] : null;
             if (file) {
-                const fileName = `${Date.now()}_${file.name}`;
+                // const fileName = `${Date.now()}_${file.name}`;
                 try {
                     // TODO: upload image to Appwrite storage
                     const quill = quillRef?.current?.getEditor();
@@ -47,7 +48,7 @@ function Editor(props:any) {
     };
 
     return (
-        <ReactQuill forwardedRef={quillRef} value={content} onChange={changeContent} theme='snow'
+        <ReactQuill forwardedRef={quillRef} theme='snow'
                     modules={{toolbar: {
                             container: [
                                 [{ 'header': [1, 2, false] }],

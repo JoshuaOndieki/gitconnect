@@ -3,10 +3,8 @@ import React, {useEffect} from 'react';
 import DOMPurify from "dompurify";
 import Comment from "@/components/comment";
 
-function Post(props: any) {
-    const [post, setPost] = React.useState(
-        {$id: '1', content: '<p>NextJS Social Network for Developers GitConnect allows developers to create a developer profile/portfolio, share posts and get help from others developers</p><p><br></p><p><img src="/images/gitconnect-logo-with-brandname.png"></p>'}
-    );
+function PostPage() {
+    const post = {$id: '1', content: '<p>NextJS Social Network for Developers GitConnect allows developers to create a developer profile/portfolio, share posts and get help from others developers</p><p><br></p><p><img src="/images/gitconnect-logo-with-brandname.png"></p>'};
     const [content, setContent] = React.useState('');
 
     const comments = [
@@ -145,4 +143,4 @@ function Post(props: any) {
     );
 }
 
-export default Post;
+export default PostPage;

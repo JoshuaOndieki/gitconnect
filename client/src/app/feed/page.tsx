@@ -2,7 +2,7 @@ import React from 'react';
 import Editor from "@/components/editor";
 import Post from "@/components/post";
 
-function Feed(props:any) {
+function Feed() {
     const posts = [
         {$id: '1', content: '<p>NextJS Social Network for Developers GitConnect allows developers to create a developer profile/portfolio, share posts and get help from others developers</p><p><br></p><p><img src="/images/gitconnect-logo-with-brandname.png"></p>'},
         {$id: '2', content: '<p>NextJS Social Network for Developers GitConnect allows developers to create a developer profile/portfolio, share posts and get help from others developers</p><p><br></p><p><img src="/images/gitconnect-logo-with-brandname.png"></p>'},
