@@ -6,6 +6,7 @@ import 'react-quill/dist/quill.snow.css';
 
 const ReactQuill = dynamic(async ()=> {
     const {default: ReactQuill1} = await import("react-quill");
+    // @ts-ignore
     return ({forwardedRef, ...props}: any) => (
         <ReactQuill1 ref={forwardedRef} {...props} />
     );
@@ -21,6 +22,7 @@ function Editor() {
     //     setContent(newContent);
     // }
 
+    // @ts-ignore
     const quillRef = useRef<any>(null);
 
     // Custom image handler for ReactQuill
