@@ -6,6 +6,7 @@ import 'react-quill/dist/quill.snow.css';
 
 const ReactQuill = dynamic(async ()=> {
     const {default: ReactQuill1} = await import("react-quill");
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return ({forwardedRef, ...props}: any) => (
         <ReactQuill1 ref={forwardedRef} {...props} />
@@ -13,6 +14,7 @@ const ReactQuill = dynamic(async ()=> {
 }, {
     ssr: false,
 });
+ReactQuill.displayName = 'ReactQuill';
 
 function Editor() {
     // const [content, setContent] = React.useState('');
@@ -22,6 +24,7 @@ function Editor() {
     //     setContent(newContent);
     // }
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const quillRef = useRef<any>(null);
 
