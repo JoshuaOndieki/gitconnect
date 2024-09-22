@@ -20,9 +20,14 @@ jobs:
       - name: Install Appwrite CLI
         run: curl -sL https://appwrite.io/cli/install.sh | bash
 
-      # Login to Appwrite
+      # Appwrite client
       - name: Setup Appwrite
         run: appwrite client --endpoint ${{ secrets.APPWRITE_ENDPOINT }} --project-id ${{ secrets.APPWRITE_PROJECT_ID }} --key ${{ secrets.APPWRITE_API_KEY }}
+
+      # Appwrite login
+      # Use appwrite login since client api key does not set session required for push
+      - name: Login to Appwrite
+        run: appwrite login --endpoint ${{ secrets.APPWRITE_ENDPOINT }} --email ${{ secrets.APPWRITE_EMAIL }} --password ${{ secrets.APPWRITE_PASSWORD }}
 
       # Push changes to Appwrite Cloud
       - name: Push changes to Appwrite Cloud
