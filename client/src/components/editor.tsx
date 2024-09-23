@@ -3,17 +3,16 @@ import React, {useRef} from 'react';
 import dynamic from "next/dynamic";
 import 'react-quill/dist/quill.snow.css';
 
-
+/* eslint-disable react/display-name */
 const ReactQuill = dynamic(async ()=> {
-    const {default: ReactQuill1} = await import("react-quill");
+    const {default: ReactQuill} = await import("react-quill");
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     return ({forwardedRef, ...props}: any) => (
-        <ReactQuill1 ref={forwardedRef} {...props} />
+        <ReactQuill ref={forwardedRef} {...props} />
     );
 }, {
     ssr: false,
 });
-ReactQuill.displayName = 'ReactQuill';
 
 function Editor() {
     // const [content, setContent] = React.useState('');
