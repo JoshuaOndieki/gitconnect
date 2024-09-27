@@ -60,7 +60,7 @@ function Verification() {
     }, []);
 
     const sendVerificationEmail = () => {
-        account.createVerification(env.BASE_URL + '/verification').then(
+        account.createVerification(env.NEXT_PUBLIC_BASE_URL + '/verification').then(
             () => {
                 setSecondsToResend(120)
                 startResendInterval()
