@@ -5,7 +5,7 @@ function Footer() {
     return (
         <footer className="p-4 bg-white sm:p-6 dark:bg-gray-800">
             <div className="mx-auto max-w-screen-xl">
-                <div className="md:flex md:justify-between">
+                <div className="md:flex md:justify-between gap-2">
                     <div className="mb-6 md:mb-0">
                         <a href="/" className="flex items-center justify-center bg-white/50 dark:bg-white rounded">
                             <img src="/images/gitconnect-logo-with-slogan.png" className="mr-3 w-[16rem]"
