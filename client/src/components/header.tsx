@@ -15,10 +15,11 @@ function Header() {
         }
     }, []);
 
-    const {user, userLoaded, reset} = useGitConnectStore()
+    const {user, userLoaded, reset, setReloadUser} = useGitConnectStore()
     const signOut = async ()=> {
         await account.deleteSession('current')
         reset()
+        setReloadUser()
     }
 
     return (
