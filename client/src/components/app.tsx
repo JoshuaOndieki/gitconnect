@@ -1,5 +1,5 @@
 'use client';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {account, functions} from "@/lib/config/appwrite";
 import useGitConnectStore from "@/lib/zustand";
 import {useRouter, usePathname} from "next/navigation";
@@ -40,7 +40,7 @@ function App({children}: Readonly<{ children: React.ReactNode }>) {
                                     setReloadUser(false)
                                 }
                             },
-                            error => {
+                            () => {
                                 reset()
                                 setHydrated()
                                 setUserLoaded(true)

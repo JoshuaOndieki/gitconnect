@@ -4,7 +4,7 @@ import useGitConnectStore from "@/lib/zustand";
 import {account, functions} from "@/lib/config/appwrite";
 import env from "@/env";
 import {Button} from "flowbite-react";
-import {AppwriteException, ExecutionMethod} from "appwrite";
+import {ExecutionMethod} from "appwrite";
 import {UserProfile} from "@/lib/types";
 import {useRouter, useSearchParams} from "next/navigation";
 
@@ -19,13 +19,13 @@ function Verification() {
         const secret = queryParams.get('secret')
         if(userId && secret) {
             account.updateVerification(userId, secret).then(
-                res => {
+                () => {
                     setTimeout(()=> {
                         setUserLoaded(false)
                         router.push('/feed')
                     }, 3000)
                 },
-                (error: AppwriteException) => {
+                () => {
                     setUserLoaded(false)
                     router.push('/feed')
                 }
@@ -39,7 +39,7 @@ function Verification() {
         const differenceInMilliseconds = +now - +past;
         return Math.floor(differenceInMilliseconds / 1000);
     }
-    const [resendIntervalId, setResendIntervalId] = useState<any>(null);
+    const [resendIntervalId, setResendIntervalId] = useState< NodeJS.Timeout | string | number | undefined>(undefined);
     const [secondsToResend, setSecondsToResend] = useState<number>(
         user?.lastVerificationEmailDate ? Math.max(120 - secondsSinceLastSent(user.lastVerificationEmailDate), 0) : 0
     )
@@ -61,11 +61,11 @@ function Verification() {
 
     const sendVerificationEmail = () => {
         account.createVerification(env.BASE_URL + '/verification').then(
-            res => {
+            () => {
                 setSecondsToResend(120)
                 startResendInterval()
             },
-            error => {
+            () => {
                 setUserLoaded(false)
             }
         )
@@ -85,7 +85,7 @@ function Verification() {
                         reset()
                     }
                 },
-                error => {
+                () => {
                     reset()
                 }
             )
@@ -133,9 +133,9 @@ function Verification() {
                 <div className="mt-2 mb-4 text-sm">
                     <p>Hi {user?.name},</p>
                     <p>
-                        We've sent a verification email to {user?.email}.
+                        We&apos;ve sent a verification email to {user?.email}.
                         Please check your inbox and follow the instructions to verify your account.
-                        If you don't see the email, check your spam folder or try resending the verification.
+                        If you don&apos;t see the email, check your spam folder or try resending the verification.
                     </p>
                 </div>
                 <div className="flex justify-end">
