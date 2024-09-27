@@ -21,7 +21,7 @@ function Login() {
     const [signingIn, setSigningIn] = useState(false)
     const [signinError, setSigninError] = useState<string | null>(null)
 
-    const {reset} = useGitConnectStore()
+    const {setReloadUser} = useGitConnectStore()
 
     const router = useRouter()
     const params = useSearchParams()
@@ -37,9 +37,9 @@ function Login() {
         } else {
             account.createEmailPasswordSession(parsed.data.email, parsed.data.password).then(
                 () => {
-                    reset()
+                    setReloadUser()
                     setSigningIn(false)
-                    router.push('/')
+                    setTimeout(()=> router.push('/'), 1000)
                 },
                 (error: AppwriteException) => {
                     // const errorMessage = error.code == 400
