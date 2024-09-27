@@ -13,7 +13,7 @@ export function dateFormatter(date: string | number | Date): string {
     const seconds = Math.floor(timeDiff / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
+    // const days = Math.floor(hours / 24);
 
     // Handle relative time formats
     if (seconds < 60) return "a few seconds ago";

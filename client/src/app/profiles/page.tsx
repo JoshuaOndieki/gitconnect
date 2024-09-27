@@ -60,7 +60,7 @@ function Profiles() {
                         <div className="py-4 px-4 mx-auto max-w-screen-xl lg:py-6 lg:px-6">
                             <div className="grid gap-8 mb-6 lg:mb-8 md:grid-cols-2 xl:grid-cols-3">
                                 {topDevelopersResponse.results.map(topDev => (
-                                    <div
+                                    <div key={topDev.$id}
                                         className="items-center bg-gray-50 rounded shadow sm:flex dark:bg-gray-800 dark:border-gray-700">
                                         <a href="#" className='sm:relative sm:w-full sm:h-full'>
                                             <img
