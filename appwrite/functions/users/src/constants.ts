@@ -1,0 +1,5 @@
+export const DATABASE_ID='gitconnect'
+export const PROFILES_COLLECTION_ID='profiles'
+export const WORK_COLLECTION_ID='work'
+export const SCHOOL_COLLECTION_ID='school'
+export const SOCIALS_COLLECTION_ID='socials'

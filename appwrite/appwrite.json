@@ -74,8 +74,49 @@
                     "type": "string",
                     "required": true,
                     "array": false,
-                    "size": 16,
+                    "size": 32,
                     "default": null
+                },
+                {
+                    "key": "lastVerificationEmailDate",
+                    "type": "datetime",
+                    "required": false,
+                    "array": false,
+                    "format": "",
+                    "default": null
+                },
+                {
+                    "key": "website",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "format": "url",
+                    "default": null
+                },
+                {
+                    "key": "bio",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 240,
+                    "default": null
+                },
+                {
+                    "key": "title",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 140,
+                    "default": null
+                },
+                {
+                    "key": "reputation",
+                    "type": "double",
+                    "required": false,
+                    "array": false,
+                    "min": -1.7976931348623157e+308,
+                    "max": 1.7976931348623157e+308,
+                    "default": 0
                 }
             ],
             "indexes": [
@@ -101,6 +142,218 @@
                         "ASC"
                     ]
                 }
+            ]
+        },
+        {
+            "$id": "work",
+            "$permissions": [],
+            "databaseId": "gitconnect",
+            "name": "work",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "company",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 240,
+                    "default": null
+                },
+                {
+                    "key": "startDate",
+                    "type": "datetime",
+                    "required": true,
+                    "array": false,
+                    "format": "",
+                    "default": null
+                },
+                {
+                    "key": "endDate",
+                    "type": "datetime",
+                    "required": false,
+                    "array": false,
+                    "format": "",
+                    "default": null
+                },
+                {
+                    "key": "userId",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 36,
+                    "default": null
+                },
+                {
+                    "key": "title",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 240,
+                    "default": null
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "school",
+            "$permissions": [],
+            "databaseId": "gitconnect",
+            "name": "school",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "name",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 240,
+                    "default": null
+                },
+                {
+                    "key": "startDate",
+                    "type": "datetime",
+                    "required": true,
+                    "array": false,
+                    "format": "",
+                    "default": null
+                },
+                {
+                    "key": "endDate",
+                    "type": "datetime",
+                    "required": false,
+                    "array": false,
+                    "format": "",
+                    "default": null
+                },
+                {
+                    "key": "userId",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 36,
+                    "default": null
+                },
+                {
+                    "key": "course",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 240,
+                    "default": null
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "socials",
+            "$permissions": [],
+            "databaseId": "gitconnect",
+            "name": "socials",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "userId",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 36,
+                    "default": null
+                },
+                {
+                    "key": "type",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "elements": [
+                        "github",
+                        "twitter",
+                        "linkedin"
+                    ],
+                    "format": "enum",
+                    "default": null
+                },
+                {
+                    "key": "username",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 240,
+                    "default": null
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "unique-social",
+                    "type": "unique",
+                    "status": "available",
+                    "attributes": [
+                        "userId",
+                        "type"
+                    ],
+                    "orders": [
+                        "ASC",
+                        "ASC"
+                    ]
+                }
+            ]
+        }
+    ],
+    "functions": [
+        {
+            "$id": "user-profile-trigger",
+            "name": "user-profile-trigger",
+            "runtime": "node-18.0",
+            "execute": [],
+            "events": [
+                "users.*.create",
+                "users.*.verification.*.create"
+            ],
+            "scopes": [
+                "users.read",
+                "documents.read",
+                "documents.write"
+            ],
+            "schedule": "",
+            "timeout": 15,
+            "enabled": true,
+            "logging": true,
+            "entrypoint": "dist/main.js",
+            "commands": "npm install && npm i -g typescript && tsc",
+            "path": "functions/user-profile-trigger",
+            "ignore": [
+                "node_modules",
+                ".npm",
+                "dist"
+            ]
+        },
+        {
+            "$id": "users",
+            "name": "users",
+            "runtime": "node-18.0",
+            "execute": [
+                "any"
+            ],
+            "events": [],
+            "scopes": [
+                "users.read",
+                "users.write",
+                "documents.read",
+                "documents.write"
+            ],
+            "schedule": "",
+            "timeout": 15,
+            "enabled": true,
+            "logging": true,
+            "entrypoint": "dist/main.js",
+            "commands": "npm install && npm i -g typescript && tsc",
+            "path": "functions/users",
+            "ignore": [
+                "node_modules",
+                ".npm",
+                "dist"
             ]
         }
     ]

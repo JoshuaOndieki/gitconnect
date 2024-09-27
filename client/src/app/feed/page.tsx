@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import Editor from "@/components/editor";
 import Post from "@/components/post";
@@ -10,18 +11,11 @@ function Feed() {
     ]
 
     return (
-        <section className='max-w-3xl lg:max-w-screen-lg m-auto my-8 md:my-16'>
+        <section className='w-full max-w-3xl lg:max-w-screen-lg m-auto my-8 md:my-16'>
             <div className='p-2'>
-                <Editor/>
-                <div className='flex justify-end mt-2'>
-                    <button type="button"
-                            className="px-8 py-2 text-xs font-medium text-center text-white bg-primary-700 rounded hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                        Post
-                    </button>
-                </div>
+                <Editor actions={[{label: 'Post', type: 'primary', click: ()=>{}}]}/>
             </div>
             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"/>
-
             <div>
                 {posts.map(post => <Post post={post} key={post.$id}/>)}
             </div>
