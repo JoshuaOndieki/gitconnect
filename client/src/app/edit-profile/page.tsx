@@ -152,7 +152,6 @@ function EditProfile() {
 
     const updateProfile = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        return
         setUpdating(true)
         setUpdatingError(null)
         setUpdateSuccess(false)
@@ -324,7 +323,8 @@ function EditProfile() {
                                             }
                                         </span>
                                     </label>
-                                    <input onChange={(event) => {
+                                    <input accept='image/*'
+                                        onChange={(event) => {
                                         if (event?.target?.files && event.target.files[0]) {
                                             const reader = new FileReader()
                                             reader.readAsDataURL(event.target.files[0])
@@ -338,10 +338,6 @@ function EditProfile() {
                                     }}
                                            className="block w-full text-sm text-gray-900 border border-gray-300 rounded cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                                            aria-describedby="file_input_help" id="file_input" type="file"/>
-                                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-300"
-                                       id="file_input_help">
-                                        SVG, PNG, JPG or GIF.
-                                    </p>
                                 </div>
                                 {profile.avatar ?
                                     <img className="w-20 h-20 rounded" src={profile.avatar}
@@ -657,7 +653,6 @@ function EditProfile() {
 
                         <Button disabled={Object.values(errors).some(error => !_.isEmpty(error))}
                                 isProcessing={updating}
-                                onClick={() => console.log('profile click', profile)}
                                 type="submit"
                                 className="mt-4 sm:mt-6 w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded text-sm text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                             Update Profile
