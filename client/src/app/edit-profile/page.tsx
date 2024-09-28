@@ -475,7 +475,7 @@ function EditProfile() {
                                 </div>
                                 <div>
                                     {profile?.work.map((work, index) => (
-                                        <div key={index + work.$id + work.startDate + work.company + work.title + work.endDate}
+                                        <div key={index + work.$id}
                                              className='rounded shadow-sm border border-gray-300 dark:border-gray-700 my-2 p-2'>
                                             <div className="w-full my-2">
                                                 <label htmlFor={'work-company-' + work.$id + '-' + index}
@@ -567,7 +567,7 @@ function EditProfile() {
                                 </div>
                                 <div>
                                     {profile?.schools.map((school, index) => (
-                                        <div key={index + school.$id + school.startDate + school.name + school.course + school.endDate}
+                                        <div key={index + school.$id}
                                              className='rounded shadow-sm border border-gray-300 dark:border-gray-700 my-2 p-2'>
                                             <div className="w-full my-2">
                                                 <label htmlFor={'school-name-' + school.$id + '-' + index}
