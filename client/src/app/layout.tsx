@@ -16,7 +16,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: {default: "gitConnect", template: "%s  | gitConnect"},
   description: "gitConnect allows developers to  create a developer profile/portfolio, share posts and get help from others developers.",
-  metadataBase: new URL(env.NEXT_PUBLIC_BASE_URL.startsWith('http') ? env.NEXT_PUBLIC_BASE_URL : `https://${env.NEXT_PUBLIC_BASE_URL}`),
+  metadataBase: env.NEXT_PUBLIC_BASE_URL,
 };
 
 export default function RootLayout({
