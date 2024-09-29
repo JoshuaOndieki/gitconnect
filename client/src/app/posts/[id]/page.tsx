@@ -20,7 +20,7 @@ function PostPage() {
     }, [post]);
 
     return (
-        <section className='max-w-3xl lg:max-w-screen-lg m-auto my-8 md:my-16'>
+        <section className='max-w-3xl lg:max-w-screen-lg m-auto my-4 md:my-8'>
             <div className='p-2 m-2'>
                 <div className='flex justify-between'>
                     <div className="flex items-center gap-4">
@@ -35,14 +35,14 @@ function PostPage() {
                     </div>
                     <div>
                         <button data-dropdown-toggle={"dropdownPost-" + post.$id}
-                                className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 bg-white rounded hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:text-gray-400 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                                className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 bg-white rounded hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
                                 type="button">
                             <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                  fill="currentColor" viewBox="0 0 16 3">
                                 <path
                                     d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
                             </svg>
-                            <span className="sr-only">Comment settings</span>
+                            <span className="sr-only">Post settings</span>
                         </button>
                         <div id={"dropdownPost-" + post.$id}
                              className="hidden z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">

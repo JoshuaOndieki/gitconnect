@@ -1,6 +1,5 @@
 'use client';
-import React, {useEffect, useState} from 'react';
-import Editor from "@/components/editor";
+import React, {useEffect, useRef, useState} from 'react';
 import Post from "@/components/post";
 import {useParams} from "next/navigation";
 import {functions} from "@/lib/config/appwrite";
@@ -12,6 +11,7 @@ import NotFound from "@/components/not-found";
 import useGitConnectStore from "@/lib/zustand";
 import {dateFormatter} from "@/lib/utils";
 import SocialIcons from "@/components/social-icons";
+import QuillEditor from "@/components/quill-editor";
 
 function Profile() {
     const {user} = useGitConnectStore()
@@ -25,6 +25,9 @@ function Profile() {
     const [loading, setLoading] = useState(true)
 
     const pathParams = useParams<{ username: string }>()
+
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    const quillRef: any = useRef();
 
     useEffect(() => {
         setLoading(true)
@@ -221,10 +224,10 @@ function Profile() {
                                 }
                             </div>
                             <div className='flex-1 min-w-80 sm:min-w-[30rem]'>
-                                <Editor actions={[{
-                                    label: 'Post', type: 'primary', click: () => {
-                                    }
-                                }]}/>
+                                <QuillEditor
+                                    actions={[{label: 'Post', type: 'primary', click: ()=>{}}]}
+                                    ref={quillRef}
+                                />
                                 <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"/>
                                 <div>
                                     <Post post={posts[0]}/>
