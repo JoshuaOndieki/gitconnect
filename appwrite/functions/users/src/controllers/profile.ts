@@ -1,14 +1,14 @@
-import {Databases, ID, Models, Query, Users} from "node-appwrite";
+import {Databases, ID, Models, Query, Users, Storage, AppwriteException} from "node-appwrite";
 import {Profile, PublicProfile, School, Social, Work} from "../interfaces.js";
 import {
     DATABASE_ID,
     PROFILES_COLLECTION_ID,
     SCHOOL_COLLECTION_ID,
-    SOCIALS_COLLECTION_ID,
+    SOCIALS_COLLECTION_ID, STORAGE_AVATARS,
     WORK_COLLECTION_ID
 } from "../constants.js";
 
-export const updateProfile = async (databases: Databases, users: Users, user: Models.User<Models.Preferences>, payload: PublicProfile)=> {
+export const updateProfile = async (databases: Databases, users: Users, storage: Storage, user: Models.User<Models.Preferences>, payload: PublicProfile, log: any)=> {
     await users.updateName(user.$id, payload.name)
     const profile = (await databases.listDocuments<Profile>(
         DATABASE_ID, PROFILES_COLLECTION_ID,
@@ -26,6 +26,15 @@ export const updateProfile = async (databases: Databases, users: Users, user: Mo
                 bio: payload.bio,
             }
         );
+        if(profile.avatar != payload.avatar) {
+            try {
+                const fileUrlSplit = profile.avatar.split('/')
+                const fileId = fileUrlSplit[fileUrlSplit.length - 2]
+                await storage.deleteFile(STORAGE_AVATARS, fileId)
+            } catch {
+                log('Could not delete avatar file: ', profile.avatar)
+            }
+        }
     }
 }
 

@@ -118,7 +118,6 @@ function Header() {
                                             Sign out</a>
                                     </div>
                                 </div>
-
                             </>
                         }
                     </div>

@@ -1,5 +1,5 @@
 import AppExpress from "@itznotabug/appexpress";
-import {Client, Databases, Models, Query, Users} from "node-appwrite";
+import {Client, Databases, Models, Query, Users, Storage, AppwriteException} from "node-appwrite";
 import {
     DATABASE_ID,
     PROFILES_COLLECTION_ID,
@@ -119,10 +119,11 @@ const getAuthenticatedUser = async (request: any, response: any) => {
     }
 };
 
-const updateUser = async (request: any, response: any) => {
+const updateUser = async (request: any, response: any, log: any) => {
     const client = getClient(request)
     const databases = new Databases(client)
     const users = new Users(client)
+    const storage = new Storage(client)
 
     const userId = request.headers['x-appwrite-user-id']
     if(!userId) {
@@ -138,7 +139,13 @@ const updateUser = async (request: any, response: any) => {
         if (!user) {
             response.status(401)
         } else {
-            await updateProfile(databases, users, user, payload)
+            try{await updateProfile(databases, users, storage, user, payload, log)}
+            catch(e){
+                if((e as AppwriteException).code == 409) {
+                    response.status(409)
+                    return
+                } else {throw e}
+            }
             await updateWork(databases, payload.work, user.$id)
             await updateSchools(databases, payload.schools, user.$id)
             await updateSocials(databases, payload.socials, user.$id)

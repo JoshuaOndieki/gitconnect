@@ -2,9 +2,9 @@
 import React, {useEffect, useState} from 'react';
 import useGitConnectStore from "@/lib/zustand";
 import {PublicProfileResponse, School, Work} from "@/lib/types";
-import {functions} from "@/lib/config/appwrite";
+import {functions, storage} from "@/lib/config/appwrite";
 import env from "@/env";
-import {AppwriteException, ExecutionMethod} from "appwrite";
+import {AppwriteException, ExecutionMethod, ID} from "appwrite";
 import {Button, Datepicker} from "flowbite-react";
 import Loader from "@/components/loader";
 import {z} from 'zod';
@@ -33,11 +33,11 @@ const socialSchema = z.object({
 const profileSchema = z.object({
     name: z.string().min(1),
     username: z.string().min(1),
-    title: z.string(),
+    title: z.string().nullable(),
     // Avatar can be File (new upload), a string URL (existing avatar), or null
     avatar: z.union([z.instanceof(File), z.string().url()]).nullable(),
     website: z.string().url().nullable(),
-    bio: z.string(),
+    bio: z.string().nullable(),
     work: z.array(workSchema).optional(),
     schools: z.array(schoolSchema).optional(),
     socials: z.array(socialSchema).optional(),
@@ -150,7 +150,7 @@ function EditProfile() {
         }
     }, [user, hydrated, userLoaded]);
 
-    const updateProfile = (e: React.FormEvent<HTMLFormElement>) => {
+    const updateProfile = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setUpdating(true)
         setUpdatingError(null)
@@ -160,8 +160,15 @@ function EditProfile() {
         if (!parsed) {
             setUpdating(false)
         } else {
+            const fileInput = (document.getElementById('file_input') as HTMLInputElement)
+            const file = fileInput && fileInput.files ? fileInput.files[0] : null
+            let fileUrl = profile?.avatar
+            if(file) {
+                const fileResponse = await storage.createFile(env.NEXT_PUBLIC_APPWRITE_STORAGE.NEXT_PUBLIC_APPWRITE_STORAGE_AVATARS ?? '', ID.unique(), file)
+                fileUrl = `${env.NEXT_PUBLIC_APPWRITE_HOST_URL}/storage/buckets/${fileResponse.bucketId}/files/${fileResponse.$id}/view?project=${env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`
+            }
             functions.createExecution(env.NEXT_PUBLIC_APPWRITE_FUNCTIONS.USERS,
-                JSON.stringify(profile), false, '/users', ExecutionMethod.PUT).then(
+                JSON.stringify({...profile, avatar: fileUrl}), false, '/users', ExecutionMethod.PUT).then(
                 (res) => {
                         setUpdating(false)
                     if(res.responseStatusCode == 200) {
@@ -169,7 +176,9 @@ function EditProfile() {
                         setReloadUser(true)
                     } else {
                         setUpdateSuccess(false)
-                        setUpdatingError('Unable to update profile. Please check your details and try again.')
+                        setUpdatingError(
+                            res.responseStatusCode == 409 ? 'Username ' + profile?.username + ' is taken, please try a different one.'
+                            : 'Unable to update profile. Please check your details and try again.')
                     }
                 },
                 (error: AppwriteException) => {
@@ -223,7 +232,7 @@ function EditProfile() {
     return (
         !loading && profile ?
             <section className="bg-white dark:bg-gray-900">
-                <div className='fixed w-full top-[60px] z-5'>
+                <div className='fixed w-full top-[60px] z-20'>
                     {updatingError &&
                         <div id="alert-border-2"
                              className="flex items-center p-4 mb-4 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800"
