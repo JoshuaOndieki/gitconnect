@@ -10,7 +10,7 @@ import {UserProfile} from "@/lib/types";
 
 
 function App({children}: Readonly<{ children: React.ReactNode }>) {
-    const {user, setUser, userLoaded, setUserLoaded, reset, hydrated, setHydrated, reloadUser, setReloadUser} = useGitConnectStore()
+    const {user, setUser, userLoaded, setUserLoaded, hydrated, reloadUser, setReloadUser} = useGitConnectStore()
 
     const route = usePathname()
     const router = useRouter()
@@ -34,27 +34,18 @@ function App({children}: Readonly<{ children: React.ReactNode }>) {
                                     setUserLoaded(true)
                                     setReloadUser(false)
                                 } else {
-                                    reset()
-                                    setHydrated()
                                     setUserLoaded(true)
                                     setReloadUser(false)
                                 }
                             },
                             () => {
-                                reset()
-                                setHydrated()
                                 setUserLoaded(true)
-                                setReloadUser(false)
                             }
                         )
                 },
                 (error: AppwriteException) => {
                     if (error.code == 401) {
-                        reset()
-                        setHydrated()
                         setUserLoaded(true)
-                        setReloadUser(false)
-                        setTimeout(()=> window.location.reload(), 1000)
                     }
                 }
             )
