@@ -62,7 +62,7 @@ function Profiles() {
                                 {topDevelopersResponse.results.map(topDev => (
                                     <div key={topDev.$id}
                                         className="items-center bg-gray-50 rounded shadow sm:flex dark:bg-gray-800 dark:border-gray-700">
-                                        <a href="#" className='sm:relative sm:w-full sm:h-full'>
+                                        <a href={'/profiles/'+topDev.username} className='sm:relative sm:w-full sm:h-full'>
                                             <img
                                                 className="w-full sm:h-full rounded sm:rounded-none sm:rounded-l-lg sm:object-cover"
                                                 src={topDev.avatar ?? '/images/logo.png'}
@@ -70,7 +70,7 @@ function Profiles() {
                                         </a>
                                         <div className="py-2 px-5">
                                             <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                                <a href="#">{topDev.name} <span
+                                                <a href={'/profiles/'+topDev.username}>{topDev.name} <span
                                                     className='text-gray-400 text-sm'>@{topDev.username}</span></a>
                                             </h3>
                                             <span

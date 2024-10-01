@@ -2,7 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import {z} from "zod";
 import {account} from "@/lib/config/appwrite";
-import {useRouter, useSearchParams} from "next/navigation";
+import {useSearchParams} from "next/navigation";
 import {Button} from "flowbite-react";
 import useGitConnectStore from "@/lib/zustand";
 import {AppwriteException} from "appwrite";

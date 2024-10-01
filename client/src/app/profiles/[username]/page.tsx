@@ -4,30 +4,83 @@ import Post from "@/components/post";
 import {useParams} from "next/navigation";
 import {functions} from "@/lib/config/appwrite";
 import env from "@/env";
-import {ExecutionMethod} from "appwrite";
-import {PublicProfileResponse} from "@/lib/types";
+import {AppwriteException, ExecutionMethod} from "appwrite";
+import {PostData, PostsResponse, PublicProfileResponse} from "@/lib/types";
 import Loader from "@/components/loader";
 import NotFound from "@/components/not-found";
 import useGitConnectStore from "@/lib/zustand";
 import {dateFormatter} from "@/lib/utils";
 import SocialIcons from "@/components/social-icons";
 import QuillEditor from "@/components/quill-editor";
+import {Button} from "flowbite-react";
 
 function Profile() {
     const {user} = useGitConnectStore()
-    const posts = [
-        {
-            $id: '1',
-            content: '<p>NextJS Social Network for Developers GitConnect allows developers to create a developer profile/portfolio, share posts and get help from others developers</p><p><br></p><p><img src="/images/gitconnect-logo-with-brandname.png"></p>'
-        }
-    ]
+    const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
+    const [postsResponse, setPostsResponse] = useState<PostsResponse | null>(null);
+    const [fetchPostsError, setFetchPostsError] = useState<string | null>(null);
+    const [pageNumber, setPageNumber] = useState(1);
+    // const [draftSearchQuery, setDraftSearchQuery] = useState<string | null>(null)
+    // const [searchQuery, setSearchQuery] = useState<string | null>(null)
+    const [newPosts, setNewPosts] = useState<PostData[]>([])
+    const [loadedPosts, setLoadedPosts] = useState<PostData[]>([])
+
+
     const [profile, setProfile] = useState<PublicProfileResponse | null>(null)
-    const [loading, setLoading] = useState(true)
 
     const pathParams = useParams<{ username: string }>()
 
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     const quillRef: any = useRef();
+
+    useEffect(() => {
+        if(profile) fetchPosts()
+    }, [pageNumber, profile]);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const initFlowbite = async () => {
+                const { initFlowbite } = await import('flowbite');
+                initFlowbite();
+            };
+            initFlowbite();
+        }
+    }, [loadedPosts]);
+
+    const fetchPosts = () => {
+        const queryParams = new URLSearchParams()
+        // if(searchQuery) {
+        //     queryParams.set('searchQuery', searchQuery)
+        //     if(searchQuery != postsResponse?.metadata.searchQuery) setPageNumber(1)
+        // }
+        if(pageNumber) {
+            queryParams.set('pageNumber', String(pageNumber))
+        }
+        queryParams.set('userId', profile?.$id ?? '')
+
+        setLoadingMore(true);
+        functions.createExecution(env.NEXT_PUBLIC_APPWRITE_FUNCTIONS.POSTS, '', false,
+            `/posts?${queryParams.toString()}`, ExecutionMethod.GET)
+            .then(res => {
+                if(res.responseStatusCode == 200) {
+                    const data = JSON.parse(res.responseBody) as PostsResponse
+                    setPostsResponse(data)
+                    setLoadedPosts(current => [...current, ...data.results])
+                } else {
+                    setPostsResponse(null);
+                }
+                setLoading(false)
+                setLoadingMore(false);
+            })
+            .catch((err) => {
+                setLoading(false)
+                setLoadingMore(false);
+                console.error('fetch posts error', err)
+                setFetchPostsError((err as AppwriteException).message)
+            });
+    }
+
 
     useEffect(() => {
         setLoading(true)
@@ -224,30 +277,53 @@ function Profile() {
                                 }
                             </div>
                             <div className='flex-1 min-w-80 sm:min-w-[30rem]'>
-                                <QuillEditor
-                                    actions={[
-                                        {
-                                            label: 'Post', type: 'primary',
-                                            click: async (content)=>{
-                                                try{
-                                                    const response = await functions.createExecution(
-                                                        env.NEXT_PUBLIC_APPWRITE_FUNCTIONS.POSTS, JSON.stringify({content}), false,
-                                                        '/posts', ExecutionMethod.POST
-                                                    )
-                                                    return response.responseStatusCode == 201;
-                                                } catch (error: any) {
-                                                    console.error('Unable to post', error)
-                                                    return false
+                                { (user?.$id == profile.$id) &&
+                                    <QuillEditor
+                                        actions={[
+                                            {
+                                                label: 'Post', type: 'primary',
+                                                click: async (content)=>{
+                                                    try{
+                                                        const response = await functions.createExecution(
+                                                            env.NEXT_PUBLIC_APPWRITE_FUNCTIONS.POSTS, JSON.stringify({content}), false,
+                                                            '/posts', ExecutionMethod.POST
+                                                        )
+                                                        if(response.responseStatusCode == 201) {
+                                                            setNewPosts(state => [JSON.parse(response.responseBody), ...state])
+                                                        }
+                                                        return response.responseStatusCode == 201;
+                                                    } catch (error) {
+                                                        console.error('Unable to post', error)
+                                                        return false
+                                                    }
                                                 }
                                             }
-                                        }
-                                    ]}
-                                    ref={quillRef}
-                                />
+                                        ]}
+                                        ref={quillRef}
+                                    />
+                                }
                                 <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"/>
-                                <div>
-                                    <Post post={posts[0]}/>
-                                </div>
+                                {newPosts.length > 0 &&
+                                    <div>
+                                        {newPosts.map(post => <Post post={post} key={post.$id} styleClass='bg-amber-100 dark:bg-amber-900'/>)}
+                                    </div>
+                                }
+                                {loadedPosts.length > 0 &&
+                                    <div>
+                                        {loadedPosts.map(post => <Post post={post} key={post.$id}/>)}
+                                    </div>
+                                }
+                                {fetchPostsError && <div className='text-center text-red-400'>Unable to fetch posts.</div>}
+                                {loading && <div className='py-2'><Loader/></div>}
+                                {(!loading && !postsResponse) && <div className='text-center'>No posts found.</div>}
+                                {(postsResponse && postsResponse.metadata.total.filtered == 10) &&
+                                    <div className='flex items-center justify-center w-full m-2 mt-8'>
+                                        <Button color='gray' isProcessing={loadingMore}
+                                                onClick={()=> setPageNumber(current => current + 1)}>
+                                            Load more posts
+                                        </Button>
+                                    </div>
+                                }
                             </div>
                         </div>
 
