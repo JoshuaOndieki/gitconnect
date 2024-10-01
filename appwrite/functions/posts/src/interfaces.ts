@@ -61,14 +61,24 @@ export interface BasicUserInfo {
     username: string
     avatar: string | null
     title: string | null
-    bio?: string | null
     joined: string
     reputation: number
-    socials?: Social[]
 }
 
-export interface UsersResponse extends BasePaginatedResponse{
-    results: BasicUserInfo[]
+export interface BasicTopUserInfo {
+    $id: string
+    name: string
+
+    username: string
+    avatar: string | null
+    title: string | null
+    bio: string | null
+    reputation: string
+    socials: Social[]
+}
+
+export interface PostsResponse extends BasePaginatedResponse{
+    results: PostData[]
 }
 
 export interface BasePaginatedResponse {
@@ -82,4 +92,39 @@ export interface BasePaginatedResponse {
         pageNumber: number
     }
     results: any
+}
+
+export interface Post extends Models.Document{
+    userId: string
+    content: string
+}
+
+export interface PostRequest {
+    content: string
+}
+
+export interface PostData extends Post {
+    user: {
+        name: string
+        username: string
+        avatar: string | null
+    }
+    interactions: {
+        commentsCount: number
+        likesCount: number
+        dislikesCount: number
+        userReaction: null | 'like' | 'dislike'
+    }
+}
+
+export interface Comment extends Models.Document{
+    userId: string
+    postId: string
+    content: string
+}
+
+export interface Reaction extends Models.Document{
+    userId: string
+    postId: string
+    like: boolean
 }

@@ -28,7 +28,7 @@ export const updateProfile = async (databases: Databases, users: Users, storage:
         );
         if(profile.avatar != payload.avatar) {
             try {
-                const fileUrlSplit = profile.avatar.split('/')
+                const fileUrlSplit = (profile.avatar ?? '').split('/')
                 const fileId = fileUrlSplit[fileUrlSplit.length - 2]
                 await storage.deleteFile(STORAGE_AVATARS, fileId)
             } catch {

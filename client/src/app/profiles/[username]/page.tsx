@@ -225,7 +225,23 @@ function Profile() {
                             </div>
                             <div className='flex-1 min-w-80 sm:min-w-[30rem]'>
                                 <QuillEditor
-                                    actions={[{label: 'Post', type: 'primary', click: ()=>{}}]}
+                                    actions={[
+                                        {
+                                            label: 'Post', type: 'primary',
+                                            click: async (content)=>{
+                                                try{
+                                                    const response = await functions.createExecution(
+                                                        env.NEXT_PUBLIC_APPWRITE_FUNCTIONS.POSTS, JSON.stringify({content}), false,
+                                                        '/posts', ExecutionMethod.POST
+                                                    )
+                                                    return response.responseStatusCode == 201;
+                                                } catch (error: any) {
+                                                    console.error('Unable to post', error)
+                                                    return false
+                                                }
+                                            }
+                                        }
+                                    ]}
                                     ref={quillRef}
                                 />
                                 <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"/>

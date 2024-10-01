@@ -1,3 +1,5 @@
+import {Models} from "appwrite";
+
 export interface UserProfile {
     userId: string
     username: string
@@ -8,12 +10,12 @@ export interface UserProfile {
 export interface PublicProfileResponse {
     $id: string
     name: string
-    avatar: string
-    bio: string
+    avatar: string | null
+    bio: string | null
     joined: string
-    title: string
+    title: string | null
     username: string
-    website: string
+    website: string | null
     work: Work[]
     schools: School[]
     socials: Social[]
@@ -46,10 +48,12 @@ export interface BasicUserInfo {
     name: string
 
     username: string
-    avatar: string
-    title: string
+    avatar: string | null
+    title: string | null
+    bio?: string | null
     joined: string
     reputation: number
+    socials?: Social[]
 }
 
 export interface UsersResponse extends BasePaginatedResponse{
@@ -67,4 +71,43 @@ export interface BasePaginatedResponse {
         pageNumber: number
     }
     results: object[]
+}
+
+export interface Post extends Models.Document{
+    userId: string
+    content: string
+}
+
+export interface PostRequest {
+    content: string
+}
+
+export interface PostData extends Post {
+    user: {
+        name: string
+        username: string
+        avatar: string | null
+    }
+    interactions: {
+        commentsCount: number
+        likesCount: number
+        dislikesCount: number
+        userReaction: null | 'like' | 'dislike'
+    }
+}
+
+export interface Comment extends Models.Document{
+    userId: string
+    postId: string
+    content: string
+}
+
+export interface Reaction extends Models.Document{
+    userId: string
+    postId: string
+    like: boolean
+}
+
+export interface PostsResponse extends BasePaginatedResponse{
+    results: PostData[]
 }

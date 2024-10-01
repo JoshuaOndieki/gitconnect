@@ -168,11 +168,10 @@ const getUsers = async (request: any, response: any, log: any) => {
 
     // TODO: Add filters and sorting. Current defaults to reputation based.
     let {pageNumber, pageSize, searchQuery} = request.query
-    let trimmedSearchQuery = searchQuery ? searchQuery.trim() : null
+    let trimmedSearchQuery = searchQuery && searchQuery.trim() ? searchQuery.trim() : null
 
     const {topDevelopers} = request.query
     if(topDevelopers) {
-        log('try')
         trimmedSearchQuery = null
         pageNumber = 1
         pageSize = 6
@@ -212,6 +211,27 @@ const getUsers = async (request: any, response: any, log: any) => {
         DATABASE_ID, PROFILES_COLLECTION_ID, queries
     )
 
+    const profilesUserIds = profiles.documents.map(p => p.userId)
+    if(!profilesUserIds.length) {
+        response.json({
+            metadata: {
+                total: {
+                    filtered: 0,
+                    all: allUsers.total
+                },
+                searchQuery: trimmedSearchQuery,
+                pageSize: pageSize ?? 10,
+                pageNumber: pageNumber ?? 1
+            },
+            results: []
+        })
+        return
+    }
+
+    const socialsForProfiles = (await databases.listDocuments(
+        DATABASE_ID, SOCIALS_COLLECTION_ID, [Query.equal('userId', profilesUserIds)]
+    )).documents
+
     const data: UsersResponse = {
         metadata: {
             total: {
@@ -222,12 +242,22 @@ const getUsers = async (request: any, response: any, log: any) => {
             pageSize: pageSize ?? 10,
             pageNumber: pageNumber ?? 1
         },
-        results: profiles.documents.map(p => ({
-            avatar: p.avatar, joined: allUsers.users.find(u => u.$id == p.userId)?.registration ?? new Date().toISOString(),
-            name: allUsers.users.find(u => u.$id == p.userId)?.name ?? '',
-            reputation: p.reputation, title: p.title, username: p.username,
-            $id: p.$id
-        }))
+        results: profiles.documents.map(p => {
+            return {
+                avatar: p.avatar, joined: allUsers.users.find(u => u.$id == p.userId)?.registration ?? new Date().toISOString(),
+                name: allUsers.users.find(u => u.$id == p.userId)?.name ?? '',
+                reputation: p.reputation, title: p.title, username: p.username,
+                $id: p.$id,
+                bio: p.bio,
+                socials: socialsForProfiles.filter(s => s.userId == p.userId).map(s => (
+                    {
+                        $id: s.$id,
+                        username: s.username,
+                        type: s.type,
+                    }
+                )),
+            }
+        })
     }
 
     response.json(data)

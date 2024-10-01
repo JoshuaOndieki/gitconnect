@@ -3,6 +3,8 @@ import React, {forwardRef, useEffect, useRef, useState} from "react";
 import {storage} from "@/lib/config/appwrite";
 import env from "@/env";
 import {ID} from "appwrite";
+import {Button} from "flowbite-react";
+import {cn} from "@/lib/utils";
 // import hljs from 'highlight.js';
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -13,7 +15,7 @@ interface QuillEditorProps {
     placeholder?: string;
     onTextChange?: (delta: any, oldDelta: any, source: string) => void;
     onSelectionChange?: (range: any, oldRange: any, source: string) => void;
-    actions?: { label: string; type: 'primary' | 'alternative'; click: () => void }[];
+    actions?: { label: string; type: 'primary' | 'alternative'; click: (content: string) => Promise<boolean>}[];
 }
 
 const QuillEditor = forwardRef<null, QuillEditorProps>(
@@ -21,12 +23,14 @@ const QuillEditor = forwardRef<null, QuillEditorProps>(
          onTextChange, onSelectionChange}, ref: any) => {
         const editorRef = useRef<HTMLDivElement>(null);
         const [quill, setQuill] = useState<any | null>(null);
+        const [actionResponse, setActionResponse] =
+            useState<{success: boolean; message: string} | null>(null)
 
         const actionClasses = {
             primary:
-                'px-8 py-2 text-xs font-medium text-center text-white bg-primary-700 rounded hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800',
+                'px-8 py-0 text-xs font-medium text-center text-white bg-primary-700 rounded hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800',
             alternative:
-                'py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700',
+                'py-0 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700',
         };
 
         useEffect(() => {
@@ -53,7 +57,6 @@ const QuillEditor = forwardRef<null, QuillEditorProps>(
                     if (defaultValue) {
                         newQuill.clipboard.dangerouslyPasteHTML(defaultValue);
                     }
-
                     setQuill(newQuill);
                     async function imageHandler() {
                         const input = document.createElement('input');
@@ -114,11 +117,34 @@ const QuillEditor = forwardRef<null, QuillEditorProps>(
                 </div>
                 {actions.length > 0 && actions.map((action, index) => (
                     <div className='flex justify-end mt-2 mr-2' key={index}>
-                        <button type="button" onClick={action.click} className={actionClasses[action.type]}>
-                            {action.label}
-                        </button>
+                        <Button onClick={async ()=>{
+                            setActionResponse(null)
+                            if(!quill?.root) {
+                                setActionResponse({success: false, message: 'An error occurred. Reload and try again.'})
+                                return
+                            } else if(!quill.root.innerText.trim()) {
+                                setActionResponse({success: false, message: 'Please type something in order to post.'})
+                                return
+                            }
+                            const success = await action.click(`<div class="ql-editor">${quill?.root?.innerHTML}</div>`);
+                            if(success) {
+                                setActionResponse({success, message: action.label + ' successful.'})
+                                quill.clipboard.dangerouslyPasteHTML('')
+                            } else {
+                                setActionResponse({success, message: action.label + ' failed. Try again.'})
+                            }
+                        }} className={actionClasses[action.type]}>
+                                {action.label}
+                        </Button>
                     </div>
                 ))}
+
+                {actionResponse &&
+                    <div className={cn('text-center my-2 px-2',
+                        actionResponse.success ? 'text-green-400' : 'text-red-400')}>
+                        {actionResponse.message}
+                    </div>
+                }
             </div>
         );
     }

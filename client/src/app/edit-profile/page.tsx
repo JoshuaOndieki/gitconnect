@@ -47,7 +47,7 @@ const profileSchema = z.object({
 function EditProfile() {
     const {user, userLoaded, setReloadUser, hydrated} = useGitConnectStore()
     const [profile, setProfile] = useState<PublicProfileResponse | null>(null)
-    const [fetchedAvatarUrl, setFetchedAvatarUrl] = useState('')
+    const [fetchedAvatarUrl, setFetchedAvatarUrl] = useState<string | null>(null)
     const [loading, setLoading] = useState(true)
     const [updating, setUpdating] = useState(false)
     const [errors, setErrors] =
@@ -309,7 +309,7 @@ function EditProfile() {
                             <div className="w-full">
                                 <label htmlFor="title"
                                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
-                                <input type="text" name="title" id="title" defaultValue={profile?.title}
+                                <input type="text" name="title" id="title" defaultValue={profile?.title ?? ''}
                                        onChange={(event) => setProfile({...profile, title: event.target.value})}
                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                        placeholder="Software Engineer"/>
@@ -349,8 +349,14 @@ function EditProfile() {
                                            aria-describedby="file_input_help" id="file_input" type="file"/>
                                 </div>
                                 {profile.avatar ?
-                                    <img className="w-20 h-20 rounded" src={profile.avatar}
-                                         alt="Large avatar"/>
+                                    <div className='flex flex-col justify-center items-center'>
+                                        <img className="w-20 h-20 rounded" src={profile.avatar}
+                                             alt="Large avatar"/>
+                                            <button type="button" onClick={() => setProfile({...profile, avatar: null})}
+                                                    className="mt-1 py-0 px-2 text-sm font-medium text-red-500 focus:outline-none bg-white rounded hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-red-500 dark:hover:text-red-800 dark:hover:bg-gray-700">
+                                                delete
+                                            </button>
+                                    </div>
                                     :
                                     <div
                                         className="relative w-20 h-20 me-2 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
@@ -382,7 +388,7 @@ function EditProfile() {
                                         </svg>
                                     </div>
                                     <input type="text" id="website"
-                                           defaultValue={profile?.website}
+                                           defaultValue={profile?.website ?? ''}
                                            onChange={(event) => setProfile({...profile, website: event.target.value})}
                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-primary-500 focus:border-primary-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                            placeholder="https://example.com"/>
@@ -467,7 +473,7 @@ function EditProfile() {
                             <div className="sm:col-span-2">
                                 <label htmlFor="bio"
                                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Bio</label>
-                                <textarea id="bio" rows={8} defaultValue={profile?.bio}
+                                <textarea id="bio" rows={8} defaultValue={profile?.bio ?? ''}
                                           className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                           placeholder="Your bio here"></textarea>
                             </div>

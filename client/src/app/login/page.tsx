@@ -23,7 +23,7 @@ function Login() {
 
     const {setReloadUser} = useGitConnectStore()
 
-    const router = useRouter()
+    // const router = useRouter()
     const params = useSearchParams()
 
     const signin = (e: React.FormEvent<HTMLFormElement>) => {

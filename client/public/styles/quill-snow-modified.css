@@ -581,7 +581,8 @@
 }
 
 .ql-editor.ql-blank::before {
-    color: rgba(0, 0, 0, 0.6);
+    /*color: rgba(0, 0, 0, 0.6);*/
+    @apply text-gray-600 dark:text-gray-300;
     content: attr(data-placeholder);
     font-style: italic;
     left: 15px;
@@ -772,13 +773,13 @@
     padding-left: 16px
 }
 
-.ql-snow .ql-editor code, .ql-snow .ql-editor .ql-code-block-container {
+.ql-snow .ql-editor code, .ql-snow .ql-editor .ql-code-block-container, .ql-code-block-container {
     /*background-color: #f0f0f0;*/
-    @apply bg-[#DFE1E5] dark:bg-[#1E1F22];
+    @apply bg-[#DFE1E5] dark:bg-[#1E1F22] text-black dark:text-white;
     border-radius: 3px
 }
 
-.ql-snow .ql-editor .ql-code-block-container {
+.ql-snow .ql-editor .ql-code-block-container, .ql-code-block-container {
     margin-bottom: 5px;
     margin-top: 5px;
     padding: 5px 10px
@@ -1033,7 +1034,8 @@
 }
 
 .ql-code-block-container {
-    position: relative
+    position: relative;
+    @apply bg-[#DFE1E5] dark:bg-[#1E1F22] text-black dark:text-white;
 }
 
 .ql-code-block-container .ql-ui {
@@ -1154,7 +1156,7 @@
     content: "Enter video:"
 }
 
-.ql-snow a {
+.ql-snow a, .ql-editor a {
     color: #06c
 }
 
