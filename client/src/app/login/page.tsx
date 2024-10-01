@@ -39,13 +39,16 @@ function Login() {
                 () => {
                     setReloadUser()
                     setSigningIn(false)
-                    setTimeout(()=> window.location.reload(), 500)
                 },
                 (error: AppwriteException) => {
-                    // const errorMessage = error.code == 400
-                    //     ? "Invalid credentials. Please check the email and password." : error.message
-                    setSigninError(error.message)
-                    setSigningIn(false)
+                    if(error.type == 'user_session_already_exists') {
+                        setReloadUser()
+                    } else {
+                        // const errorMessage = error.code == 400
+                        //     ? "Invalid credentials. Please check the email and password." : error.message
+                        setSigninError(error.message)
+                        setSigningIn(false)
+                    }
                 }
             )
         }
