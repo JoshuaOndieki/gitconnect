@@ -299,6 +299,126 @@
                     ]
                 }
             ]
+        },
+        {
+            "$id": "posts",
+            "$permissions": [],
+            "databaseId": "gitconnect",
+            "name": "posts",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "userId",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 36,
+                    "default": null
+                },
+                {
+                    "key": "content",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 1000000,
+                    "default": null
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "content_search",
+                    "type": "fulltext",
+                    "status": "available",
+                    "attributes": [
+                        "content"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "comments",
+            "$permissions": [],
+            "databaseId": "gitconnect",
+            "name": "comments",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "userId",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 36,
+                    "default": null
+                },
+                {
+                    "key": "content",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 1024,
+                    "default": null
+                },
+                {
+                    "key": "postId",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 36,
+                    "default": null
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "content_search",
+                    "type": "fulltext",
+                    "status": "available",
+                    "attributes": [
+                        "content"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "post_reactions",
+            "$permissions": [],
+            "databaseId": "gitconnect",
+            "name": "post_reactions",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "userId",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 36,
+                    "default": null
+                },
+                {
+                    "key": "postId",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 36,
+                    "default": null
+                },
+                {
+                    "key": "like",
+                    "type": "boolean",
+                    "required": true,
+                    "array": false,
+                    "default": null
+                }
+            ],
+            "indexes": []
         }
     ],
     "functions": [
@@ -355,6 +475,65 @@
                 ".npm",
                 "dist"
             ]
+        },
+        {
+            "$id": "posts",
+            "execute": [
+                "any"
+            ],
+            "name": "posts",
+            "enabled": true,
+            "logging": true,
+            "runtime": "node-18.0",
+            "scopes": [
+                "users.read",
+                "documents.read",
+                "documents.write"
+            ],
+            "events": [],
+            "schedule": "",
+            "timeout": 15,
+            "entrypoint": "dist/main.js",
+            "commands": "npm install && npm i -g typescript && tsc",
+            "path": "functions/posts",
+            "ignore": [
+                "node_modules",
+                ".npm",
+                "dist"
+            ]
+        }
+    ],
+    "buckets": [
+        {
+            "$id": "avatars",
+            "$permissions": [
+                "read(\"any\")",
+                "create(\"users\")",
+                "read(\"users\")"
+            ],
+            "fileSecurity": false,
+            "name": "avatars",
+            "enabled": true,
+            "maximumFileSize": 30000000,
+            "allowedFileExtensions": [],
+            "compression": "none",
+            "encryption": true,
+            "antivirus": true
+        },
+        {
+            "$id": "posts",
+            "$permissions": [
+                "create(\"users\")",
+                "read(\"users\")"
+            ],
+            "fileSecurity": false,
+            "name": "posts",
+            "enabled": true,
+            "maximumFileSize": 30000000,
+            "allowedFileExtensions": [],
+            "compression": "none",
+            "encryption": true,
+            "antivirus": true
         }
     ]
 }

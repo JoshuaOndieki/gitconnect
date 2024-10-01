@@ -2,7 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import {z} from "zod";
 import {account} from "@/lib/config/appwrite";
-import {useRouter, useSearchParams} from "next/navigation";
+import {useSearchParams} from "next/navigation";
 import {Button} from "flowbite-react";
 import useGitConnectStore from "@/lib/zustand";
 import {AppwriteException} from "appwrite";
@@ -23,7 +23,7 @@ function Login() {
 
     const {setReloadUser} = useGitConnectStore()
 
-    const router = useRouter()
+    // const router = useRouter()
     const params = useSearchParams()
 
     const signin = (e: React.FormEvent<HTMLFormElement>) => {
@@ -39,7 +39,7 @@ function Login() {
                 () => {
                     setReloadUser()
                     setSigningIn(false)
-                    setTimeout(()=> router.push('/'), 1000)
+                    setTimeout(()=> window.location.reload(), 500)
                 },
                 (error: AppwriteException) => {
                     // const errorMessage = error.code == 400
@@ -75,7 +75,7 @@ function Login() {
             <div className='fixed w-full top-[60px] z-50'>
                 {params.get('signupSuccess') &&
                     <div id="alert-border-3"
-                         className="flex items-center p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800"
+                         className="z-20 flex items-center p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800"
                          role="alert">
                         <svg className="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                              fill="currentColor" viewBox="0 0 20 20">
@@ -100,7 +100,7 @@ function Login() {
 
                 {signinError &&
                     <div id="alert-border-2"
-                         className="flex items-center p-4 mb-4 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800"
+                         className="z-20 flex items-center p-4 mb-4 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800"
                          role="alert">
                         <svg className="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                              fill="currentColor" viewBox="0 0 20 20">
