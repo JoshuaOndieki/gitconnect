@@ -10,7 +10,7 @@ import {UserProfile} from "@/lib/types";
 
 
 function App({children}: Readonly<{ children: React.ReactNode }>) {
-    const {user, setUser, userLoaded, setUserLoaded, reset, hydrated, setHydrated, reloadUser, setReloadUser} = useGitConnectStore()
+    const {user, setUser, userLoaded, setUserLoaded, hydrated, reloadUser, setReloadUser} = useGitConnectStore()
 
     const route = usePathname()
     const router = useRouter()
