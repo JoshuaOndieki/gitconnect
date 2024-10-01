@@ -34,27 +34,18 @@ function App({children}: Readonly<{ children: React.ReactNode }>) {
                                     setUserLoaded(true)
                                     setReloadUser(false)
                                 } else {
-                                    reset()
-                                    setHydrated()
                                     setUserLoaded(true)
                                     setReloadUser(false)
                                 }
                             },
                             () => {
-                                reset()
-                                setHydrated()
                                 setUserLoaded(true)
-                                setReloadUser(false)
                             }
                         )
                 },
                 (error: AppwriteException) => {
                     if (error.code == 401) {
-                        reset()
-                        setHydrated()
                         setUserLoaded(true)
-                        setReloadUser(false)
-                        setTimeout(()=> window.location.reload(), 1000)
                     }
                 }
             )
