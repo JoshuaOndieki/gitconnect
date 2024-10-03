@@ -20,13 +20,15 @@ function Header() {
     const signOut = async ()=> {
         try {
             await account.deleteSession('current')
+            setReloadUser()
+            setTimeout(()=> window.location.reload(), 500)
         } catch(error) {
             if((error as AppwriteException).code == 401) {
                 setUser(null)
                 setUserLoaded(true)
+                setTimeout(()=> window.location.reload(), 500)
             }
         }
-        setReloadUser()
     }
 
     return (

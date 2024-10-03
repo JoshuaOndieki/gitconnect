@@ -2,7 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import {z} from "zod";
 import {account} from "@/lib/config/appwrite";
-import {useRouter, useSearchParams} from "next/navigation";
+import {useSearchParams} from "next/navigation";
 import {Button} from "flowbite-react";
 import useGitConnectStore from "@/lib/zustand";
 import {AppwriteException} from "appwrite";
@@ -24,16 +24,7 @@ function Login() {
     const [fromReset, setFromReset] = useState(!!params.get('reset'))
     const [fromSignup, setFromSignup] = useState(!!params.get('signupSuccess'))
 
-    const {setReloadUser, user} = useGitConnectStore()
-
-    const router = useRouter()
-
-    useEffect(() => {
-        if(user) {
-            console.log('pushing feed')
-            router.push('/feed')
-        }
-    }, [user, router]);
+    const {setReloadUser} = useGitConnectStore()
 
     const signin = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -46,8 +37,9 @@ function Login() {
         } else {
             account.createEmailPasswordSession(parsed.data.email, parsed.data.password).then(
                 () => {
-                    setReloadUser()
+                    setReloadUser(true)
                     setSigningIn(false)
+                    setTimeout(()=> window.location.reload(), 500)
                 },
                 async (error: AppwriteException) => {
                     if(error.type == 'user_session_already_exists') {
