@@ -14,14 +14,14 @@ import _ from "lodash";
 const workSchema = z.object({
     company: z.string().min(1),
     title: z.string().min(1),
-    startDate: z.string().min(1),
+    startDate: z.string(),
     endDate: z.string().nullable(),
 });
 
 const schoolSchema = z.object({
     name: z.string().min(1),
     course: z.string().min(1),
-    startDate: z.string().min(1),
+    startDate: z.string(),
     endDate: z.string().nullable(),
 });
 
@@ -159,6 +159,7 @@ function EditProfile() {
         const parsed = validateForm();
         if (!parsed) {
             setUpdating(false)
+            console.log('fail')
         } else {
             const fileInput = (document.getElementById('file_input') as HTMLInputElement)
             const file = fileInput && fileInput.files ? fileInput.files[0] : null
@@ -167,6 +168,7 @@ function EditProfile() {
                 const fileResponse = await storage.createFile(env.NEXT_PUBLIC_APPWRITE_STORAGE.NEXT_PUBLIC_APPWRITE_STORAGE_AVATARS ?? '', ID.unique(), file)
                 fileUrl = `${env.NEXT_PUBLIC_APPWRITE_HOST_URL}/storage/buckets/${fileResponse.bucketId}/files/${fileResponse.$id}/view?project=${env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`
             }
+            console.log('here')
             functions.createExecution(env.NEXT_PUBLIC_APPWRITE_FUNCTIONS.USERS,
                 JSON.stringify({...profile, avatar: fileUrl}), false, '/users', ExecutionMethod.PUT).then(
                 (res) => {
@@ -217,6 +219,7 @@ function EditProfile() {
                     return acc;
                 }, {} as { [key: number]: { name: string | null, course: string | null } })
             }
+            console.log('new errors', newErrors, parsed)
             setErrors(newErrors);
             return null
         } else {
