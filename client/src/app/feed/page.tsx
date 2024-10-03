@@ -31,16 +31,6 @@ function Feed() {
         fetchPosts()
         }, [searchQuery, pageNumber]);
 
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const initFlowbite = async () => {
-                const { initFlowbite } = await import('flowbite');
-                initFlowbite();
-            };
-            initFlowbite();
-        }
-    }, [loadedPosts]);
-
     const fetchPosts = () => {
         const queryParams = new URLSearchParams()
         if(searchQuery) {

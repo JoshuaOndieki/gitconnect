@@ -18,8 +18,36 @@ function Profiles() {
     const [pageNumber, setPageNumber] = useState<number>(1)
     const [usersResponse, setUsersResponse] = useState<UsersResponse | null>(null)
     const [topDevelopersResponse, setTopDevelopersResponse] = useState<UsersResponse | null>(null)
+    const [loadTopDevsError, setLoadTopDevsError] = useState(false)
+    const [loadDevsError, setLoadDevsError] = useState(false)
 
     useEffect(() => {
+        loadDevs()
+
+    }, [searchQuery, pageNumber]);
+
+    useEffect(() => {
+        loadTopDevs()
+    }, []);
+    const loadTopDevs = ()=> {
+        setLoadTopDevsError(false)
+        functions.createExecution(env.NEXT_PUBLIC_APPWRITE_FUNCTIONS.USERS, '', false,
+            `/users?topDevelopers=true`, ExecutionMethod.GET)
+            .then(
+                res => {
+                    if(res.responseStatusCode == 200) {
+                        const responseBody = JSON.parse(res.responseBody) as UsersResponse
+                        setTopDevelopersResponse(responseBody)
+                    } else {
+                        setLoadTopDevsError(true)
+                    }
+                },
+                () => { setLoadTopDevsError(true) }
+            )
+    }
+    const loadDevs = ()=> {
+        setLoadDevsError(false)
+        setUsersResponse(null)
         const queryParams = new URLSearchParams()
         if(searchQuery) {
             queryParams.set('searchQuery', searchQuery)
@@ -30,74 +58,75 @@ function Profiles() {
         }
         functions.createExecution(env.NEXT_PUBLIC_APPWRITE_FUNCTIONS.USERS, '', false,
             `/users?${queryParams.toString()}`, ExecutionMethod.GET).then(
-                res => {
-                    if(res.responseStatusCode == 200) {
-                        const responseBody = JSON.parse(res.responseBody) as UsersResponse
-                        setUsersResponse(responseBody)
-                    }
-                }
-        )
-    }, [searchQuery, pageNumber]);
-
-    useEffect(() => {
-        functions.createExecution(env.NEXT_PUBLIC_APPWRITE_FUNCTIONS.USERS, '', false,
-            `/users?topDevelopers=true`, ExecutionMethod.GET).then(
             res => {
                 if(res.responseStatusCode == 200) {
                     const responseBody = JSON.parse(res.responseBody) as UsersResponse
-                    setTopDevelopersResponse(responseBody)
+                    setUsersResponse(responseBody)
+                } else {
+                    setLoadDevsError(true)
                 }
-            })
-    }, []);
+            },
+            () => {
+                setLoadDevsError(true)
+            }
+        )
+    }
 
     return (
-        <section className='p-3 pt-8 max-w-screen-xl m-auto'>
-            <h1 className='text-3xl'>Developer Profiles</h1>
-            <div className='flex flex-col items-center'>
+        <section className='p-1 sm:p-3 pt-8 max-w-screen-xl m-auto'>
+            <h1 className='text-3xl p-2'>Developer Profiles</h1>
+            <div className='flex flex-col items-center py-4'>
                 <h2 className='text-xl'>Top Developers</h2>
-                {topDevelopersResponse ?
-                    <section className="">
-                        <div className="py-4 px-4 mx-auto max-w-screen-xl lg:py-6 lg:px-6">
-                            <div className="grid gap-8 mb-6 lg:mb-8 md:grid-cols-2 xl:grid-cols-3">
-                                {topDevelopersResponse.results.map(topDev => (
-                                    <div key={topDev.$id}
-                                        className="items-center bg-gray-50 rounded shadow sm:flex dark:bg-gray-800 dark:border-gray-700">
-                                        <a href={'/profiles/'+topDev.username} className='sm:relative sm:w-full sm:h-full'>
-                                            <img
-                                                className="w-full sm:h-full rounded sm:rounded-none sm:rounded-l-lg sm:object-cover"
-                                                src={topDev.avatar ?? '/images/logo.png'}
-                                                alt="Dev Avatar"/>
-                                        </a>
-                                        <div className="py-2 px-5">
-                                            <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                                <a href={'/profiles/'+topDev.username}>{topDev.name} <span
-                                                    className='text-gray-400 text-sm'>@{topDev.username}</span></a>
-                                            </h3>
-                                            <span
-                                                className="text-gray-500 dark:text-gray-400">{topDev.title}</span>
-                                            <p className="mt-3 mb-4 font-light text-gray-500 dark:text-gray-400">
-                                                {topDev.bio}
-                                            </p>
-                                            {topDev.socials && <SocialIcons socials={topDev.socials}/>}
+                {loadTopDevsError ?
+                    <button onClick={loadTopDevs}
+                            className="font-medium text-red-600 dark:text-red-500 hover:underline">
+                        Try again!
+                    </button>
+                    :
+                    topDevelopersResponse ?
+                        <section className="p-1">
+                            <div className="py-4 px-1 sm:px-4 mx-auto max-w-screen-xl lg:py-6 lg:px-6">
+                                <div className="grid gap-8 mb-6 lg:mb-8 md:grid-cols-2 xl:grid-cols-3">
+                                    {topDevelopersResponse.results.map(topDev => (
+                                        <div key={topDev.$id}
+                                             className="items-center bg-gray-50 rounded shadow sm:flex dark:bg-gray-800 dark:border-gray-700">
+                                            <a href={'/profiles/' + topDev.username}
+                                               className='sm:relative sm:w-full sm:h-full'>
+                                                <img
+                                                    className="w-full sm:h-full rounded sm:rounded-none sm:rounded-l-lg sm:object-cover max-w-[280px] sm:max-w-auto"
+                                                    src={topDev.avatar ?? '/images/logo.png'}
+                                                    alt="Dev Avatar"/>
+                                            </a>
+                                            <div className="py-2 px-5">
+                                                <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                                    <a href={'/profiles/' + topDev.username}>{topDev.name} <span
+                                                        className='text-gray-400 text-sm'>@{topDev.username}</span></a>
+                                                </h3>
+                                                <span
+                                                    className="text-gray-500 dark:text-gray-400">{topDev.title}</span>
+                                                <p className="mt-3 mb-4 font-light text-gray-500 dark:text-gray-400 sm:max-w-auto">
+                                                    {topDev.bio}
+                                                </p>
+                                                {topDev.socials && <SocialIcons socials={topDev.socials}/>}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    </section>
-                    : <div className='py-4 px-4 mx-auto max-w-screen-xl lg:py-6 lg:px-6'><Loader/></div>
+                        </section>
+                        : <div className='py-4 px-4 mx-auto max-w-screen-xl lg:py-6 lg:px-6'><Loader/></div>
                 }
             </div>
 
             <div className='flex flex-col items-center mb-16'>
                 <h2 className='text-xl'>Explore Developers</h2>
-                <section className="p-3 sm:p-5 w-full">
-                    <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
+                <section className="p-1 sm:p-5 w-full">
+                    <div className="mx-auto max-w-screen-xl px-1 sm:px-4 lg:px-12">
                         <div className="bg-white dark:bg-gray-800 relative shadow-md sm:rounded overflow-hidden">
                             <div
-                                className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+                                className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 py-4">
                                 <div className="w-full md:w-1/2">
-                                    <form className="flex items-center" onSubmit={(event)=> event.preventDefault()}>
+                                    <form className="flex items-center" onSubmit={(event) => event.preventDefault()}>
                                         <label htmlFor="simple-search" className="sr-only">Search</label>
                                         <div className="relative w-full">
                                             <div
@@ -188,7 +217,7 @@ function Profiles() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="overflow-x-auto">
+                            <div className="overflow-x-auto max-w-[85dvw]">
                                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                     <thead
                                         className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -200,23 +229,68 @@ function Profiles() {
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {usersResponse?.results.map(dev =>
-                                        <tr className="border-b dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 hover:underline"
-                                            key={dev.username}>
-                                            <th scope="row">
-                                                <a href={'/profiles/' + dev.username}
-                                                   className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white flex items-center">
-                                                    <img src='/images/oj.jpg' className='h-[48px] w-[48px] rounded-full'
-                                                         alt='avatar'/>
-                                                    <span className='ml-2 mr-1 text-lg'>{dev.name}</span>
-                                                    <span className='text-gray-400'>@{dev.username}</span>
-                                                </a>
-                                            </th>
-                                            <td className="px-4 py-3">{dev.title}</td>
-                                            <td className="px-4 py-3">{dev.reputation}</td>
-                                            <td className="px-4 py-3">{dateFormatter(dev.joined)}</td>
-                                        </tr>
-                                    )}
+                                        {loadDevsError ?
+                                            <tr>
+                                                <td className='w-full text-center p-2'>
+                                                    <button onClick={loadDevs}
+                                                            className="font-medium text-red-600 dark:text-red-500 hover:underline">
+                                                        Try again!
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            :
+                                            usersResponse ?
+                                                usersResponse?.results.map(dev =>
+                                                    <tr className="border-b dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 hover:underline"
+                                                        key={dev.username}>
+                                                        <th scope="row">
+                                                            <a href={'/profiles/' + dev.username}
+                                                               className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white flex items-center">
+                                                                {dev.avatar
+                                                                    ? <img className="w-8 h-8 me-2 rounded-full"
+                                                                           src={dev.avatar} alt="user photo"/>
+                                                                    :
+                                                                    <div
+                                                                        className="relative w-8 h-8 me-2 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                                                                        <svg
+                                                                            className="absolute w-10 h-10 text-gray-400 -left-1"
+                                                                            fill="currentColor" viewBox="0 0 20 20"
+                                                                            xmlns="http://www.w3.org/2000/svg">
+                                                                            <path fillRule="evenodd"
+                                                                                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                                                                  clipRule="evenodd"></path>
+                                                                        </svg>
+                                                                    </div>
+                                                                }
+                                                                <span className='ml-2 mr-1 text-lg'>{dev.name}</span>
+                                                                <span className='text-gray-400'>@{dev.username}</span>
+                                                            </a>
+                                                        </th>
+                                                        <td className="px-4 py-3">{dev.title}</td>
+                                                        <td className="px-4 py-3">{dev.reputation}</td>
+                                                        <td className="px-4 py-3">{dateFormatter(dev.joined)}</td>
+                                                    </tr>
+                                                )
+                                                :
+                                                <tr>
+                                                    <td className='w-full flex items-center justify-center p-4'>
+                                                        <div role="status">
+                                                            <svg aria-hidden="true"
+                                                                 className="inline w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                                                                 viewBox="0 0 100 101" fill="none"
+                                                                 xmlns="http://www.w3.org/2000/svg">
+                                                                <path
+                                                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                                                    fill="currentColor"/>
+                                                                <path
+                                                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                                                    fill="currentFill"/>
+                                                            </svg>
+                                                            <span className="sr-only">Loading...</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                        }
                                     </tbody>
                                 </table>
                             </div>
