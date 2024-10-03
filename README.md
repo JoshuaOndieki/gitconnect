@@ -4,12 +4,14 @@ GitConnect allows developers to  create a developer profile/portfolio, share pos
 
 ![gitconnect-logo-with-slogan.png](assets/gitconnect-logo-with-slogan.png)
 
+https://gitconnect-tan.vercel.app
+
 ## Project Resources
 ### Figma
 [Link to Figma Designs](https://www.figma.com/design/1nkE9Ab7HLbtxJtSzWawnk/gitConnect?node-id=0-1&t=Eyfjd1ZZcxTkCgI0-1)
 ### Project Management
 For the initial phase, the simple GitHub Project Management tool was used.
-[gitConnect GitHub Project](https://github.com/users/JoshuaOndieki/projects/2)
+[gitConnect GitHub Project](https://github.com/users/JoshuaOndieki/projects/2/views/1?filterQuery=)
 ### Documentation
 Architecture diagrams, onboarding instructions, research and brainstorming docs are done using Notion.
 [gitConnect Notion Docs](https://troubled-milk-3ff.notion.site/gitConnect-ea20192794c14730ab3d732db1030d03?pvs=4)
