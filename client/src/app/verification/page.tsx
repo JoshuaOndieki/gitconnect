@@ -14,10 +14,10 @@ function Verification() {
 
     const queryParams = useSearchParams()
     const router = useRouter()
+    const userId = queryParams.get('userId')
+    const secret = queryParams.get('secret')
 
     useEffect(() => {
-        const userId = queryParams.get('userId')
-        const secret = queryParams.get('secret')
         if(userId && secret) {
             account.updateVerification(userId, secret).then(
                 () => {
@@ -32,7 +32,7 @@ function Verification() {
                 }
             )
         }
-    }, []);
+    }, [userId, secret]);
 
     const secondsSinceLastSent = (date: string)=> {
         const now = new Date();

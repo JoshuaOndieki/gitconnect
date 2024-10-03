@@ -16,7 +16,7 @@ function App({children}: Readonly<{ children: React.ReactNode }>) {
     const router = useRouter()
 
     const PATHS = {
-        allowedPaths: ['/login', '/signup', '/profiles', '/', '/profiles/*'],
+        allowedPaths: ['/login', '/signup', '/recovery', '/verification', '/profiles', '/', '/profiles/*'],
         authenticatedDisallowedPaths: ['/login', '/signup', '/']
     }
 
