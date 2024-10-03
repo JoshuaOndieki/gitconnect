@@ -23,12 +23,12 @@ function Profiles() {
 
     useEffect(() => {
         loadDevs()
-
     }, [searchQuery, pageNumber]);
 
     useEffect(() => {
-        loadTopDevs()
+        setTimeout(()=>loadTopDevs(), 1000)
     }, []);
+
     const loadTopDevs = ()=> {
         setLoadTopDevsError(false)
         functions.createExecution(env.NEXT_PUBLIC_APPWRITE_FUNCTIONS.USERS, '', false,

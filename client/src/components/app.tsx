@@ -33,6 +33,7 @@ function App({children}: Readonly<{ children: React.ReactNode }>) {
                                     setUser({...u, ...profile})
                                     setUserLoaded(true)
                                     setReloadUser(false)
+                                    setTimeout(()=> window.location.reload(), 1500)
                                 } else {
                                     setUserLoaded(true)
                                     setReloadUser(false)
@@ -71,6 +72,7 @@ function App({children}: Readonly<{ children: React.ReactNode }>) {
     }
 
     useEffect(() => {
+        console.log('user change app', user)
         if(userLoaded) {
             if(user && !user.emailVerification) {
                 if(route != '/verification') router.push('/verification')
