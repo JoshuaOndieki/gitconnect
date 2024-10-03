@@ -2,7 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import {z} from "zod";
 import {account} from "@/lib/config/appwrite";
-import {useSearchParams} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import {Button} from "flowbite-react";
 import useGitConnectStore from "@/lib/zustand";
 import {AppwriteException} from "appwrite";
@@ -20,15 +20,20 @@ function Login() {
 
     const [signingIn, setSigningIn] = useState(false)
     const [signinError, setSigninError] = useState<string | null>(null)
-
-    const {setReloadUser} = useGitConnectStore()
-
-    // const router = useRouter()
     const params = useSearchParams()
+    const [fromReset, setFromReset] = useState(!!params.get('reset'))
+    const [fromSignup, setFromSignup] = useState(!!params.get('signupSuccess'))
+
+    const {setReloadUser, user} = useGitConnectStore()
+
+    const router = useRouter()
 
     useEffect(() => {
-        setReloadUser()
-    }, []);
+        if(user) {
+            console.log('pushing feed')
+            router.push('/feed')
+        }
+    }, [user, router]);
 
     const signin = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -44,9 +49,10 @@ function Login() {
                     setReloadUser()
                     setSigningIn(false)
                 },
-                (error: AppwriteException) => {
+                async (error: AppwriteException) => {
                     if(error.type == 'user_session_already_exists') {
-                        setReloadUser()
+                        await account.deleteSession('current')
+                        signin(e)
                     } else {
                         // const errorMessage = error.code == 400
                         //     ? "Invalid credentials. Please check the email and password." : error.message
@@ -80,7 +86,7 @@ function Login() {
     return (
         <section className="bg-gray-50 dark:bg-gray-900">
             <div className='fixed w-full top-[60px] z-50'>
-                {params.get('signupSuccess') &&
+                {fromSignup &&
                     <div id="alert-border-3"
                          className="z-20 flex items-center p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800"
                          role="alert">
@@ -92,7 +98,31 @@ function Login() {
                         <div className="ms-3 text-sm font-medium">
                             Thanks for signing up. Please log in to start posting and networking. 🎉
                         </div>
-                        <button type="button"
+                        <button type="button" onClick={()=> setFromSignup(false)}
+                                className="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
+                                data-dismiss-target="#alert-border-3" aria-label="Close">
+                            <span className="sr-only">Dismiss</span>
+                            <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                 viewBox="0 0 14 14">
+                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                            </svg>
+                        </button>
+                    </div>
+                }
+                {fromReset &&
+                    <div id="alert-border-3"
+                         className="z-20 flex items-center p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800"
+                         role="alert">
+                        <svg className="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                             fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                        </svg>
+                        <div className="ms-3 text-sm font-medium">
+                            Your password reset was successful. Please login.
+                        </div>
+                        <button type="button" onClick={()=> setFromReset(false)}
                                 className="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
                                 data-dismiss-target="#alert-border-3" aria-label="Close">
                             <span className="sr-only">Dismiss</span>
@@ -170,7 +200,7 @@ function Login() {
                                     {/*        me</label>*/}
                                     {/*</div>*/}
                                 </div>
-                                <a href="#"
+                                <a href="/recovery"
                                    className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot
                                     password?</a>
                             </div>
