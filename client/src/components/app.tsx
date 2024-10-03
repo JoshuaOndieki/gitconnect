@@ -45,6 +45,7 @@ function App({children}: Readonly<{ children: React.ReactNode }>) {
                 },
                 (error: AppwriteException) => {
                     if (error.code == 401) {
+                        setUser(null)
                         setUserLoaded(true)
                     }
                 }

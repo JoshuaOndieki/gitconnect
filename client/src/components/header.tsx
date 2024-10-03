@@ -2,6 +2,7 @@
 import React, {useEffect} from 'react';
 import useGitConnectStore from "@/lib/zustand";
 import {account} from "@/lib/config/appwrite";
+import {AppwriteException} from "appwrite";
 
 
 function Header() {
@@ -15,10 +16,16 @@ function Header() {
         }
     }, []);
 
-    const {user, userLoaded, reset, setReloadUser} = useGitConnectStore()
+    const {user, userLoaded, setReloadUser, setUser, setUserLoaded} = useGitConnectStore()
     const signOut = async ()=> {
-        await account.deleteSession('current')
-        reset()
+        try {
+            await account.deleteSession('current')
+        } catch(error) {
+            if((error as AppwriteException).code == 401) {
+                setUser(null)
+                setUserLoaded(true)
+            }
+        }
         setReloadUser()
     }
 

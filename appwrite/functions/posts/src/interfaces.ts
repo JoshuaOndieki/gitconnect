@@ -128,3 +128,17 @@ export interface Reaction extends Models.Document{
     postId: string
     like: boolean
 }
+
+export type ReactionActionType = 'like' | 'undo-like' | 'dislike' | 'undo-dislike'
+
+export interface CommentsResponse extends BasePaginatedResponse {
+    results: CommentData[]
+}
+
+export interface CommentData extends Comment{
+    user: {
+        name: string
+        username: string
+        avatar: string | null
+    }
+}

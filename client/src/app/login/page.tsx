@@ -26,6 +26,10 @@ function Login() {
     // const router = useRouter()
     const params = useSearchParams()
 
+    useEffect(() => {
+        setReloadUser()
+    }, []);
+
     const signin = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setSigningIn(true)
