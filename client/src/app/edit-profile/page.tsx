@@ -527,13 +527,13 @@ function EditProfile() {
                                             <div
                                                 className="flex flex-col justify-center sm:flex-row sm:items-center w-full my-4">
                                                 <div className="flex-1">
-                                                    <Datepicker
+                                                    <Datepicker onSelectedDateChanged={(date) => updateWork(index, {...work, startDate: date.toISOString() })}
                                                         defaultDate={work.startDate ? new Date(work.startDate) : undefined}/>
                                                 </div>
                                                 <span className="mx-4 text-gray-500">to</span>
                                                 <div className="flex-1">
                                                     {work.endDate ?
-                                                        <Datepicker
+                                                        <Datepicker onSelectedDateChanged={(date) => updateWork(index, {...work, endDate: date.toISOString() })}
                                                             defaultDate={work.endDate ? new Date(work.endDate) : undefined}/>
                                                         :
                                                         <div
@@ -620,13 +620,13 @@ function EditProfile() {
                                             <div
                                                 className="flex flex-col justify-center sm:flex-row sm:items-center w-full my-4">
                                                 <div className="flex-1">
-                                                    <Datepicker
+                                                    <Datepicker onSelectedDateChanged={(date) => updateSchool(index, {...school, startDate: date.toISOString() })}
                                                         defaultDate={school.startDate ? new Date(school.startDate) : undefined}/>
                                                 </div>
                                                 <span className="mx-4 text-gray-500">to</span>
                                                 <div className="flex-1">
                                                     {school.endDate ?
-                                                        <Datepicker
+                                                        <Datepicker onSelectedDateChanged={(date) => updateSchool(index, {...school, endDate: date.toISOString() })}
                                                             defaultDate={school.endDate ? new Date(school.endDate) : undefined}/>
                                                         :
                                                         <div
