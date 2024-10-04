@@ -328,6 +328,8 @@ function EditProfile() {
                                                 <button onClick={(e) => {
                                                     e.preventDefault();
                                                     setProfile({...profile, avatar: fetchedAvatarUrl})
+                                                    const file = document.getElementById('file_input');
+                                                    if(file) (file as HTMLInputElement).value = '';
                                                 }}
                                                         className="text-orange-500 hover:text-orange-700 font-semibold px-4 rounded">
                                                     click to reset
@@ -477,6 +479,7 @@ function EditProfile() {
                                 <label htmlFor="bio"
                                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Bio</label>
                                 <textarea id="bio" rows={8} defaultValue={profile?.bio ?? ''}
+                                          onChange={(event) => setProfile({...profile, bio: event.target.value})}
                                           className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                           placeholder="Your bio here"></textarea>
                             </div>
