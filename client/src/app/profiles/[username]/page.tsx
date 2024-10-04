@@ -217,7 +217,7 @@ function Profile() {
                                                         d="M4 10h16m-8-3V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Zm3-7h.01v.01H8V13Zm4 0h.01v.01H12V13Zm4 0h.01v.01H16V13Zm-8 4h.01v.01H8V17Zm4 0h.01v.01H12V17Zm4 0h.01v.01H16V17Z"/>
                                                 </svg>
                                             </span>
-                                                    <span>{dateFormatter(work.startDate)} - {work.endDate ?? 'Present'}</span>
+                                                    <span>{dateFormatter(work.startDate)} - {work.endDate ? dateFormatter(work.endDate) : 'Present'}</span>
                                                 </div>
                                             </div>
                                         ))}
@@ -259,7 +259,7 @@ function Profile() {
                                                             d="M4 10h16m-8-3V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Zm3-7h.01v.01H8V13Zm4 0h.01v.01H12V13Zm4 0h.01v.01H16V13Zm-8 4h.01v.01H8V17Zm4 0h.01v.01H12V17Zm4 0h.01v.01H16V17Z"/>
                                                     </svg>
                                                 </span>
-                                                    <span>{dateFormatter(school.startDate)} - {school.endDate ?? 'Present'}</span>
+                                                    <span>{dateFormatter(school.startDate)} - {school.endDate ? dateFormatter(school.endDate) : 'Present'}</span>
                                                 </div>
                                             </div>
                                         ))}
